@@ -25,7 +25,7 @@ for line in input:
         fold_instructions.append((axis,int(number)))
 del number, input, line, f, axis
 
-#%% object oriented approach
+#%% initiating Paper class and defining functions
 class Paper:
   def __init__(self, dots): # initialize paper from list of (x,y) coordinates of dots
     xmax,ymax = max([dot[0] for dot in dots]), max([dot[1] for dot in dots])
@@ -34,20 +34,29 @@ class Paper:
     for x,y in dots:
       self.array[x,y] = 1
        
-  def show(self, c='blue'):
+  def show(self, c='blue'): # plot the current dots on the plot
     x,y = np.where(self.array >= 1)[0], np.where(self.array>= 1)[1]
     plt.xlabel('X')
     plt.ylabel('Y')
-    plt.xlim(-1, self.gridsize[0])
-    plt.ylim(-1, self.gridsize[1])
+    plt.xlim(-1, self.gridsize[0]+1)
+    plt.ylim(-1, self.gridsize[1]+1)
     plt.scatter(x,y, marker=".", c=c)
-#    plt.axhline(y=7, c='red')
+    plt.axhline(y=5, c='red')
+    plt.show()
 
-  def fold(self):
+  def fold(self, fold):
+    free_flap = self.array[:,fold+1:].copy()
+    fixed_flap = self.array[:,:fold].copy()
+    # print('fixed', fixed_flap.shape)
+    # print('free', free_flap.shape)
+    free_flap = np.flipud(free_flap)
+    self.array = fixed_flap + free_flap
     
         
 
 #%%%%% Part 1
-dots=[[2,3],[1,5]]
+dots=[(2,7),(5,10)]
 p = Paper(dots)
+p.show()
+p.fold(5)
 p.show()
