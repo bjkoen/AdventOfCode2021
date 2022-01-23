@@ -33,24 +33,28 @@ class Paper:
     self.array = np.zeros(self.gridsize)
     for x,y in dots:
       self.array[x,y] = 1
+    self.array = self.array.transpose()
        
   def show(self, c='blue'): # plot the current dots on the plot
     x,y = np.where(self.array >= 1)[0], np.where(self.array>= 1)[1]
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.xlim(-1, self.gridsize[0]+1)
-    plt.ylim(-1, self.gridsize[1]+1)
-    plt.scatter(x,y, marker=".", c=c)
-    plt.axhline(y=5, c='red')
-    plt.show()
+    fig, ax=plt.subplots()
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_xlim(-1, self.gridsize[0]+1)
+    ax.set_ylim(-1, self.gridsize[1]+1)
+    ax.scatter(x,y, marker=".", c=c)
+    ax.invert_yaxis()
+    ax.xaxis.tick_top()
+    ax.axhline(y=5, c='red')
+    fig.show()
 
   def fold(self, fold):
-    free_flap = self.array[:,fold+1:].copy()
-    fixed_flap = self.array[:,:fold].copy()
-    # print('fixed', fixed_flap.shape)
-    # print('free', free_flap.shape)
-    free_flap = np.flipud(free_flap)
-    self.array = fixed_flap + free_flap
+    self.free_flap = self.array[:,fold+1:].copy()
+    self.fixed_flap = self.array[:,:fold].copy()
+    print('fixed', self.fixed_flap.shape)
+    print('free', self.free_flap.shape)
+    self.flipped_free_flap = np.flipud(self.free_flap)
+    self.array = self.fixed_flap + self.flipped_free_flap
     
         
 
